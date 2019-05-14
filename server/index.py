@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-# HTTPRequestHandler class
+import cv2
 
 
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
