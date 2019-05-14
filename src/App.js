@@ -1,5 +1,6 @@
 /*global chrome*/
 import React from 'react';
+import request from 'request';
 import './App.css';
 
 class App extends React.Component {
@@ -46,13 +47,17 @@ class App extends React.Component {
     this.setState({ img: image })
   }
 
+  sendPhoto(){
+    request.post('http://localhost:5000', {form:{key:'value'}})
+  }
+
   whatToRender() {
     if (this.state.img) {
       chrome.extension.getBackgroundPage().console.log(this.state.img)
       return (
         <div>
           <img src={this.state.img.src} alt='da_image_yo'></img>
-          <button id="keep">Keep Photo</button>
+          <button onClick={() => this.sendPhoto()} id="keep">Keep Photo</button>
           <button onClick={() => { this.setState({ img: undefined }, ()=>{this.grabCamera()})}} id="retake">Retake</button>
         </div>
       );

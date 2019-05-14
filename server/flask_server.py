@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import request
-import cv2
+# import cv2
 
 APP = Flask(__name__)
 
@@ -9,4 +9,5 @@ def route_func():
     if request.method == 'GET':
         return 'Hello, World!'
     else:
+        print('we got the message {}'.format(request.form['key']))
         return 'SUPP'
