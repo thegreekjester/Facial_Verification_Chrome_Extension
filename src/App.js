@@ -44,16 +44,12 @@ class App extends React.Component {
     var video = document.getElementById('video');
     context.drawImage(video, 0, 0, 350, 300);
     var image = canvas.toDataURL();
-    canvas.toBlob(function(blob){
-      t.setState({blob:blob})
-    })
     this.setState({ img: image })
   }
 
   sendPhoto(){
     let data = new FormData();
     data.append('image', this.state.img)
- 
     const config = {
         headers: {
             'content-type': 'multipart/form-data'
