@@ -1,7 +1,7 @@
 /*global chrome*/
 import React from 'react';
-import request from 'request';
 import './App.css';
+import axios from 'axios'
 
 class App extends React.Component {
   constructor(props) {
@@ -38,25 +38,35 @@ class App extends React.Component {
   }
 
   takePicture() {
+    var t = this;
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var video = document.getElementById('video');
     context.drawImage(video, 0, 0, 350, 300);
-    var image = new Image();
-    image.src = canvas.toDataURL("image/png");
+    var image = canvas.toDataURL();
+    canvas.toBlob(function(blob){
+      t.setState({blob:blob})
+    })
     this.setState({ img: image })
   }
 
   sendPhoto(){
-    request.post('http://localhost:5000', {form:{key:'value'}})
+    let data = new FormData();
+    data.append('image', this.state.img)
+ 
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    }
+    axios.post('http://localhost:5000', data, config)
   }
 
   whatToRender() {
     if (this.state.img) {
-      chrome.extension.getBackgroundPage().console.log(this.state.img)
       return (
         <div>
-          <img src={this.state.img.src} alt='da_image_yo'></img>
+          <img src={this.state.img} alt='da_image_yo'></img>
           <button onClick={() => this.sendPhoto()} id="keep">Keep Photo</button>
           <button onClick={() => { this.setState({ img: undefined }, ()=>{this.grabCamera()})}} id="retake">Retake</button>
         </div>
