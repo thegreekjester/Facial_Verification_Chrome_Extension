@@ -1,3 +1,5 @@
+// use npm run build to create optimized build for the chrome extension
+
 /*global chrome*/
 import React from 'react';
 import './App.css';
@@ -9,6 +11,8 @@ class App extends React.Component {
     this.state = {}
   }
   componentDidMount() {
+    // onload of the react app, the contentScript.js is run
+    // this takes care of injecting the iframe that asks for webcam permissions
     var t = this;
     chrome.tabs.executeScript(null, {
       file: "contentScript.js"
@@ -30,7 +34,6 @@ class App extends React.Component {
       navigator.mediaDevices.getUserMedia({
         video: true
       }).then(function (stream) {
-        //video.src = window.URL.createObjectURL(stream);
         video.srcObject = stream;
         video.play();
       });
@@ -47,6 +50,10 @@ class App extends React.Component {
     this.setState({ img: image })
   }
 
+  captureVideo(){
+
+  }
+
   sendPhoto(){
     let data = new FormData();
     data.append('image', this.state.img)
@@ -59,6 +66,7 @@ class App extends React.Component {
   }
 
   whatToRender() {
+    // renders if there IS an image captured and in local state
     if (this.state.img) {
       return (
         <div>
@@ -68,6 +76,7 @@ class App extends React.Component {
         </div>
       );
     } else {
+      //renders if there is no image captured
       return (
         <div>
           <video id="video" width="80%" height="80%" autoplay></video>

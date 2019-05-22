@@ -1,13 +1,16 @@
+# FLASK_APP=flask_server.py
+# flask run
+
+import base64
+import io
 import cv2
 import numpy as np
 from PIL import Image
-import base64
-import io
 
 from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
-from werkzeug.datastructures import ImmutableMultiDict
+# from werkzeug.datastructures import ImmutableMultiDict
 
 
 def stringToImage(base64_string):
