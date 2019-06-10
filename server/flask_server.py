@@ -38,7 +38,7 @@ def route_func():
         img = np.array(img)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         cv2.imwrite('test.png', img)
-        return predict_image('test.png', 'labels.pickle', 'new_yml.yml')
+        return predict_image('test.png', 'new_pickle.pickle', 'new_yml.yml')
         
 
 # localhost:5000/video route

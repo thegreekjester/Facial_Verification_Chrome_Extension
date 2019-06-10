@@ -61,7 +61,7 @@ def predict_image(img_path, pickle_path, yml_path):
                 id_, uncertainty = recognizer.predict(roi_gray)
                 print(uncertainty)
             # if the uncertainty of the classification is less than 60, print the name value
-            if uncertainty <55:
+            if uncertainty <65:
                 name = labels[id_]
                 print(name)
                 return name

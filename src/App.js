@@ -4,7 +4,6 @@
 import React from 'react';
 import './App.css';
 import axios from 'axios'
-import { read } from 'fs';
 var t;
 var mediaRecorder;
 
@@ -88,7 +87,7 @@ class App extends React.Component {
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var video = document.getElementById('video');
-    context.drawImage(video, 0, 0, 350, 300);
+    context.drawImage(video, 0, 0, 350, 260);
     var image = canvas.toDataURL();
     this.setState({ img: image })
   }
@@ -169,7 +168,7 @@ class App extends React.Component {
     if (this.state.img) {
       return (
         <div className='container'>
-          <img style={{'height':'90%'}} src={this.state.img} alt='da_image_yo'></img>
+          <img src={this.state.img} alt='da_image_yo'></img>
           <button onClick={() => this.sendPhoto()} id="keep">Keep Photo</button>
           <button onClick={() => { this.setState({ img: undefined }, () => { this.grabCamera() }) }} id="retake">Retake</button>
         </div>
@@ -191,7 +190,7 @@ class App extends React.Component {
           <video id="video" width="100%" height="100%" autoplay></video>
           <button onClick={() => this.takePicture()} id="snap">Snap Photo</button>
           <button onClick={() => this.videoPowerButton()}>Record Video</button>
-          <canvas id="canvas" width="350" height="300" style={{'display':'none'}}></canvas>
+          <canvas id="canvas" height='260' width='350' style={{'display':'none'}}></canvas>
         </div>
       )
     }
