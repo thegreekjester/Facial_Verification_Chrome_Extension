@@ -38,7 +38,8 @@ def route_func():
         img = np.array(img)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         cv2.imwrite('test.png', img)
-        return 'received it'
+        return predict_image('test.png', 'labels.pickle', 'new_yml.yml')
+        
 
 # localhost:5000/video route
 @APP.route('/video', methods=['GET', 'POST'])
@@ -55,4 +56,4 @@ def new_func():
         video2dataset('new_output.webm',5,'dataset', person)
         train_faces('dataset', 'new_pickle.pickle', 'new_yml.yml')
         # send back a response saying training was succesfully 
-        return 'received it'
+        return 'received the video'

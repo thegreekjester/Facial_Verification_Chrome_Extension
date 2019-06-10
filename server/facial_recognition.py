@@ -66,7 +66,7 @@ def predict_image(img_path, pickle_path, yml_path):
                 print(name)
                 return name
     print('nothing found')
-    return None
+    return 'nothing found'
 
 
 def train_faces(dataset, pickle_path, yml_file):
