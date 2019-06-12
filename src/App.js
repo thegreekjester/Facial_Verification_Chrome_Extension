@@ -145,7 +145,6 @@ class App extends React.Component {
   sendVideo() {
     chrome.extension.getBackgroundPage().console.log('sending video')
     let data = new FormData();
-    // var file = new File([new Uint8Array(this.state.video)], 'video.mp4', {type: 'video/mp4', lastModified: Date.now()});
     data.append('video', this.state.video)
     const config = {
       headers: {
@@ -155,6 +154,9 @@ class App extends React.Component {
     axios.post('http://localhost:5000/video', data, config)
       .then((response) =>{
         chrome.extension.getBackgroundPage().console.log(response.data)
+        // setting the local state with the response from the server
+        t.setState({vidResponse:response.data})
+        
       })
       .catch((error) => {
         chrome.extension.getBackgroundPage().console.log(error)
@@ -168,6 +170,7 @@ class App extends React.Component {
     if (this.state.img) {
       return (
         <div className='container'>
+          {this.state.imgResponse === 'nothing found'? <h2 style={{'color':'#7CFC00'}}>Could not recognize you</h2>:<h2>{this.state.imgResonse}</h2> }
           <img src={this.state.img} alt='da_image_yo'></img>
           <button onClick={() => this.sendPhoto()} id="keep">Keep Photo</button>
           <button onClick={() => { this.setState({ img: undefined }, () => { this.grabCamera() }) }} id="retake">Retake</button>
@@ -177,12 +180,13 @@ class App extends React.Component {
       chrome.extension.getBackgroundPage().console.log('hello brah', this.state.video)
       return (
         <div className='container'>
-          <video id='recording' width='100%' height='100%' src={this.state.blobURL} type='video/webm' controls></video>
+          {this.state.vidResponse && <h2 style={{'color':'#7CFC00'}}>Succesfully trained the model on you!</h2>}
+          <video id='recording' width='100%' height='100%' src={this.state.blobURL} controls></video>
           <button onClick={() => this.setState({ blobURL: '' }, () => { this.grabCamera() })}>Retake Video</button>
           <button onClick={() => this.sendVideo()}>Train Model</button>
         </div>
       );
-    }
+    } 
     else {
       //renders if there is no image or video captured
       return (
