@@ -13,5 +13,5 @@
   },
   "web_accessible_resources":["popup.html"],
 
-  "permissions": ["<all_urls>", "storage", "activeTab"]
+  "permissions": ["<all_urls>", "tabs", "storage", "activeTab"]
 }

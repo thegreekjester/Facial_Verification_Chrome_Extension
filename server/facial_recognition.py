@@ -3,6 +3,7 @@ import cv2
 import pickle
 import os
 from sklearn.preprocessing import LabelEncoder
+import time
 
 
 
@@ -61,7 +62,7 @@ def predict_image(img_path, pickle_path, yml_path):
                 id_, uncertainty = recognizer.predict(roi_gray)
                 print(uncertainty)
             # if the uncertainty of the classification is less than 60, print the name value
-            if uncertainty <65:
+            if uncertainty <70:
                 name = labels[id_]
                 print(name)
                 return name
@@ -135,13 +136,13 @@ def video2dataset(vid_path, frame_skip, rel_dir, person, prototxt='deploy.protot
     only facial ROI images (in grayscale)
 
     """
+    current_time = round(time.time())
     # Reading in the Caffe Model for Face Detection
     net = cv2.dnn.readNetFromCaffe(prototxt, caffe_model) # pylint: disable=no-member
 
     # Grab the current directory
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-    # PLEASE MAKE THIS MORE DYNAMIC!!!!!!!!
     # Check if the directory you want to put images in exists, if not, create it
     if not os.path.exists(BASE_DIR + '/' + rel_dir ):
         os.mkdir(BASE_DIR + '/' + rel_dir)
@@ -182,7 +183,7 @@ def video2dataset(vid_path, frame_skip, rel_dir, person, prototxt='deploy.protot
                 if frame_num % frame_skip == 0:
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     gray_roi = gray[startY:endY, startX:endX]
-                    cv2.imwrite(rel_dir + '/' + person + '/' + str(frame_num) + '.png', gray_roi)
+                    cv2.imwrite(rel_dir + '/' + person + '/' + str(current_time) + str(frame_num) + '.png', gray_roi)
                     print(rel_dir + '/' + person + '/' + str(frame_num) + '.png')
             
             frame_num+=1

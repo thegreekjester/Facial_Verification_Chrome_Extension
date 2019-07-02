@@ -3,7 +3,9 @@
 /*global chrome*/
 import React from 'react';
 import './App.css';
-import axios from 'axios'
+import axios from 'axios';
+import data from 'insert_chrome_passwords_csv_here';
+import Papa from 'papaparse';
 var t;
 var mediaRecorder;
 
@@ -32,6 +34,7 @@ class App extends React.Component {
 
   /***************************** Camera *********************************/
 
+  // This takes care of setting up the camera as well as the media recorder
   grabCamera() {
     // Grab elements, create settings, etc.
     var video = document.getElementById('video');
@@ -41,7 +44,7 @@ class App extends React.Component {
       // This line returns a promise (the stream)
       navigator.mediaDevices.getUserMedia({
         video: true,
-        audio:false
+        audio: false
       }).then(function (stream) {
         // this stream is the webcam stream and we assign it to the video element
         video.srcObject = stream;
@@ -66,7 +69,7 @@ class App extends React.Component {
           chrome.extension.getBackgroundPage().console.log('length of buffer array', buffer)
 
           // creating new blob (binary large obj) defining it as an webm file
-          let blob = new Blob(buffer, {type:'video/webm'});
+          let blob = new Blob(buffer, { type: 'video/webm' });
           chrome.extension.getBackgroundPage().console.log('this is the blob', blob)
 
           // clean up buffer array
@@ -76,9 +79,9 @@ class App extends React.Component {
           t.setState({ blobURL: videoURL, video: blob })
         }
       })
-      .catch((e)=>{
-        chrome.extension.getBackgroundPage().console.log('this is your error', e)
-      })
+        .catch((e) => {
+          chrome.extension.getBackgroundPage().console.log('this is your error', e)
+        })
     }
   }
 
@@ -103,12 +106,18 @@ class App extends React.Component {
       }
     }
     axios.post('http://localhost:5000', data, config)
-    .then(function (response) {
-      chrome.extension.getBackgroundPage().console.log(response.data);
-    })
-    .catch(function (error) {
-      chrome.extension.getBackgroundPage().console.log(error);
-    });
+      .then(function (response) {
+        chrome.extension.getBackgroundPage().console.log(response.data);
+        chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+          chrome.extension.getBackgroundPage().console.log(tabs[0].url);
+          t.setState({ imgResponse: response.data, tab: tabs[0].url }, () => {
+            t.grabCredentials()
+          })
+        });
+      })
+      .catch(function (error) {
+        chrome.extension.getBackgroundPage().console.log(error);
+      });
   }
 
 
@@ -122,7 +131,7 @@ class App extends React.Component {
       let video = document.getElementById('video')
       let track = video.srcObject.getTracks()
       chrome.extension.getBackgroundPage().console.log('these are thet tracks', track)
-      track.forEach((tr)=>{
+      track.forEach((tr) => {
         tr.stop()
       })
       chrome.extension.getBackgroundPage().console.log('this is stream', track)
@@ -152,49 +161,79 @@ class App extends React.Component {
       }
     }
     axios.post('http://localhost:5000/video', data, config)
-      .then((response) =>{
+      .then((response) => {
         chrome.extension.getBackgroundPage().console.log(response.data)
         // setting the local state with the response from the server
-        t.setState({vidResponse:response.data})
-        
+        t.setState({ vidResponse: response.data })
+
       })
       .catch((error) => {
         chrome.extension.getBackgroundPage().console.log(error)
+        t.setState({ vidResponse: 'error' })
       })
   }
   /*************************** General *******************************************/
 
+  // Reads in csv of chrome passwords and sets local state with the correct credentials for site
+  grabCredentials() {
+    Papa.parse(data, {
+      header: true,
+      download: true,
+      skipEmptyLines: true,
+      // Here this is also available. So we can call our custom class method
+      complete: (res) => { 
+        chrome.extension.getBackgroundPage().console.log(res.data)
+        chrome.extension.getBackgroundPage().console.log(this.state.tab)
+        for(var creds in res.data){
+          chrome.extension.getBackgroundPage().console.log('outer', res.data[creds])
+          if(this.state.tab.indexOf(res.data[creds].name) !== -1){
+            chrome.extension.getBackgroundPage().console.log('in')
+            chrome.tabs.executeScript(null, {
+                code: 'var config = ' + JSON.stringify(res.data[creds])
+            }, function() {
+            chrome.tabs.executeScript(null, {file: 'insert_creds.js'});
+});
+            break;
+          }
+        }
+        
+      }
+    });
+  }
+
+  // General renderer function
   whatToRender() {
     chrome.extension.getBackgroundPage().console.log('new render')
     // renders if there IS an image captured and in local state
     if (this.state.img) {
       return (
         <div className='container'>
-          {this.state.imgResponse === 'nothing found'? <h2 style={{'color':'#7CFC00'}}>Could not recognize you</h2>:<h2>{this.state.imgResonse}</h2> }
+          {this.state.imgResponse && this.state.imgResponse === 'nothing found' ? <h2 style={{ 'color': 'red' }}>Could not recognize you</h2> : <h2 style={{ 'color': '#7CFC00' }}>{this.state.imgResponse}</h2>}
           <img src={this.state.img} alt='da_image_yo'></img>
           <button onClick={() => this.sendPhoto()} id="keep">Keep Photo</button>
-          <button onClick={() => { this.setState({ img: undefined }, () => { this.grabCamera() }) }} id="retake">Retake</button>
+          <button onClick={() => { this.setState({ img: null, imgResponse: null }, () => { this.grabCamera() }) }} id="retake">Retake</button>
         </div>
       );
+      // renders if they have recorded a video
     } else if (this.state.blobURL) {
-      chrome.extension.getBackgroundPage().console.log('hello brah', this.state.video)
+      chrome.extension.getBackgroundPage().console.log('hello brah', this.state.vidResponse)
       return (
         <div className='container'>
-          {this.state.vidResponse && <h2 style={{'color':'#7CFC00'}}>Succesfully trained the model on you!</h2>}
+          {this.state.vidResponse &&  <h2 style={{ 'color': '#7CFC00' }}>Succesfully trained the model on you!</h2>}
           <video id='recording' width='100%' height='100%' src={this.state.blobURL} controls></video>
-          <button onClick={() => this.setState({ blobURL: '' }, () => { this.grabCamera() })}>Retake Video</button>
+          <button onClick={() => this.setState({ blobURL: null, vidResponse: null }, () => { this.grabCamera() })}>Retake Video</button>
           <button onClick={() => this.sendVideo()}>Train Model</button>
         </div>
       );
-    } 
+    }
     else {
-      //renders if there is no image or video captured
+      //renders if there is no image or video captured (default render)
       return (
         <div className='container'>
           <video id="video" width="100%" height="100%" autoplay></video>
           <button onClick={() => this.takePicture()} id="snap">Snap Photo</button>
           <button onClick={() => this.videoPowerButton()}>Record Video</button>
-          <canvas id="canvas" height='260' width='350' style={{'display':'none'}}></canvas>
+          <canvas id="canvas" height='260' width='350' style={{ 'display': 'none' }}></canvas>
         </div>
       )
     }

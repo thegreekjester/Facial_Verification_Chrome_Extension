@@ -52,7 +52,7 @@ def new_func():
         print('this is files', request.files['video'])
         file = request.files['video']
         file.save('new_output.webm')
-        person = 'Peter_Katsos'
+        person = 'insert_name_here'
         video2dataset('new_output.webm',5,'dataset', person)
         train_faces('dataset', 'new_pickle.pickle', 'new_yml.yml')
         # send back a response saying training was succesfully 
