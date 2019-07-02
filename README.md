@@ -1,68 +1,90 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Facial Recognition Chrome Extension
 
-## Available Scripts
+This is a chrome extension that you can use to sign in to websites with facial recognition. 
 
-In the project directory, you can run:
+![Camera Extension](Camera_Extension.png)
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+For Python Part (the server)
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+```bash
+pip3 install opencv-python
 
-### `npm test`
+pip3 install flask 
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+pip3 install numpy
+```
 
-### `npm run build`
+For JS part (front end)
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm install --save 
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Set up
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Grab your Chrome Passwords by exporting it to CSV**
+  - https://www.cyclonis.com/how-export-passwords-csv-file-from-google-chrome/ 
 
-### `npm run eject`
+2. **Put Chrome Passwords CSV into ./src folder**
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. **Go to ./server/flask_server.py and add your name**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```python
+# localhost:5000/video route
+@APP.route('/video', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def new_func():
+    if request.method == 'GET':
+        return 'Hello, World!'
+    else:
+        # uses request.files becuase what I am sending over is in blob format
+        print('this is files', request.files['video'])
+        file = request.files['video']
+        file.save('new_output.webm')
+        person = 'insert_name_here'
+        video2dataset('new_output.webm',5,'dataset', person)
+        train_faces('dataset', 'new_pickle.pickle', 'new_yml.yml')
+        # send back a response saying training was succesfully 
+        return 'received the video'
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+4. **Go to ./src/App.js and update the Chrome Passwords csv path for the variable data**
+```javascript
+/*global chrome*/
+import React from 'react';
+import './App.css';
+import axios from 'axios';
+import data from 'insert_chrome_passwords_csv_here';
+import Papa from 'papaparse';
+var t;
+var mediaRecorder;
+```
 
-## Learn More
+## Usage
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. **After Set up, run "npm run build" to create out the new build folder**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. **Go to "chrome://extensions/" in your browser and upload the build folder you just created as a new extension**
 
-### Code Splitting
+3. **Go to ./server and run "export FLASK_APP=flask_server.py" in the terminal**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+4. **Start Flask server by running "flask run" in terminal**
 
-### Analyzing the Bundle Size
+5. **Train the Neural Network by Capturing a video of you, then press "train model"; You should receive a message saying model is successfully trained**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+6. **Go to a website that your chrome browser has saved the passwords for, then open up extension and take a photo. Then Click "keep photo". If the model recognized you, the user name and password should populate the login**
 
-### Making a Progressive Web App
+7. **Congrats! You now can sign in with your facial features!!**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+ 
 
-### Advanced Configuration
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+Please make sure to update tests as appropriate.
 
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
