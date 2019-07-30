@@ -11,9 +11,12 @@ import os
 from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
-from facial_recognition import video2dataset, train_faces, predict_image
+#from facial_recognition import video2dataset, train_faces, predict_image
+from new_facial_recognition import video2dataset, train_faces, predict_image
 
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
+user = 'peter_katsos' #Person this extension is being used for
 
 def stringToImage(base64_string):
     imgdata = base64.b64decode(base64_string)
@@ -32,13 +35,12 @@ def route_func():
     if request.method == 'GET':
         return 'Hello, World!'
     else:
-        print('sup')
-        data = request.form['image']
+        data = request.form['image'] 
         img = stringToImage(data[22:])
         img = np.array(img)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         cv2.imwrite('test.png', img)
-        return predict_image('test.png', 'new_pickle.pickle', 'new_yml.yml')
+        return predict_image('test.png', user)
         
 
 # localhost:5000/video route
@@ -52,8 +54,7 @@ def new_func():
         print('this is files', request.files['video'])
         file = request.files['video']
         file.save('new_output.webm')
-        person = 'insert_name_here'
-        video2dataset('new_output.webm',5,'dataset', person)
-        train_faces('dataset', 'new_pickle.pickle', 'new_yml.yml')
+        video2dataset('new_output.webm',5,'FACES', user)
+        train_faces()
         # send back a response saying training was succesfully 
         return 'received the video'

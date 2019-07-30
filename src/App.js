@@ -4,7 +4,7 @@
 import React from 'react';
 import './App.css';
 import axios from 'axios';
-import data from 'insert_chrome_passwords_csv_here';
+import data from './Chrome_Passwords.csv';
 import Papa from 'papaparse';
 var t;
 var mediaRecorder;
@@ -208,7 +208,7 @@ class App extends React.Component {
     if (this.state.img) {
       return (
         <div className='container'>
-          {this.state.imgResponse && this.state.imgResponse === 'nothing found' ? <h2 style={{ 'color': 'red' }}>Could not recognize you</h2> : <h2 style={{ 'color': '#7CFC00' }}>{this.state.imgResponse}</h2>}
+          {this.state.imgResponse && this.state.imgResponse === 'not_recognized' ? <h2 style={{ 'color': 'red' }}>Could not recognize you</h2> : <h2 style={{ 'color': '#7CFC00' }}>{this.state.imgResponse}</h2>}
           <img src={this.state.img} alt='da_image_yo'></img>
           <button onClick={() => this.sendPhoto()} id="keep">Keep Photo</button>
           <button onClick={() => { this.setState({ img: null, imgResponse: null }, () => { this.grabCamera() }) }} id="retake">Retake</button>
