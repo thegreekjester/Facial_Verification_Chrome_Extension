@@ -7,7 +7,7 @@ import axios from 'axios';
 import data from './Chrome_Passwords.csv';
 import Papa from 'papaparse';
 var t;
-var mediaRecorder;
+var mediaRecorder; 
 
 
 class App extends React.Component {
