@@ -4,7 +4,7 @@
 import React from 'react';
 import './App.css';
 import axios from 'axios';
-import data from 'insert_chrome_passwords_csv_here';
+import data from './Chrome_Passwords.csv';
 import Papa from 'papaparse';
 var t;
 var mediaRecorder;
