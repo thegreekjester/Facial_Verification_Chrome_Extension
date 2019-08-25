@@ -1,22 +1,25 @@
-var userArray = ['User', 'user', 'email', 'Email']
-var passArray = ['password', 'Password']
+var userArray = ['User', 'user', 'email', 'Email', 'id', 'ID']
+var passArray = ['pass', 'Pass']
 var password;
 var username;
-userArray.forEach(function(str){
+for (var i=0; i<userArray.length; i++){
+    var str = userArray[i];
     var element = document.querySelector(`input[placeholder*="${str}"]`)
     if(element !== null){
         username = element;
-        console.log('we found it')
+        break;
     }
-})
+}
 
-passArray.forEach(function(str){
+for (var j=0; j<passArray.length; j++){
+    var str = passArray[j]
     var element = document.querySelector(`input[placeholder*="${str}"]`)
     if(element !== null){
         password = element;
-        console.log('we found it password')
+        break;
     }
-})
+}
+
 
 username.value = config.username
 

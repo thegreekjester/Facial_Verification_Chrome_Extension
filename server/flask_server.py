@@ -49,10 +49,10 @@ def new_func():
         return 'Hello, World!'
     else:
         # uses request.files becuase what I am sending over is in blob format
-        print('this is files', request.files['video'])
+        # print('this is files', request.files['video'])
         file = request.files['video']
         file.save('new_output.webm')
-        person = 'insert_name_here'
+        person = 'peter_katsos'
         video2dataset('new_output.webm',5,'dataset', person)
         train_faces('dataset', 'new_pickle.pickle', 'new_yml.yml')
         # send back a response saying training was succesfully 

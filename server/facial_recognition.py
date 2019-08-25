@@ -5,6 +5,20 @@ import os
 from sklearn.preprocessing import LabelEncoder
 import time
 
+def preprocess_input(img_path):
+
+    img = cv2.imread(img_path,0) # load BGR color image as gray
+    img = cv2.resize(img, (92,112)) # un-needed for LBPH algorithm but its habit
+
+    equ = cv2.equalizeHist(img) # histogram equalization
+    norm = cv2.normalize(equ, None, 0, 255, cv2.NORM_MINMAX) #normalize between 0-255
+    final_img = cv2.fastNlMeansDenoising(norm) # remove all noise
+    # res = np.hstack((equ, de_noise)) #stacking images side-by-side
+    # plt.imshow(res, cmap='gray') # display equalized image 
+    # plt.show()
+    
+    return final_img
+
 
 
 def predict_image(img_path, pickle_path, yml_path):
@@ -20,7 +34,7 @@ def predict_image(img_path, pickle_path, yml_path):
     """
 
     labels = {}
-    # the neural net loaded from a pre-trained caffe model
+    # the neural net loaded from a pre-trained caffe model for face detection
     net = cv2.dnn.readNetFromCaffe('deploy.prototxt.txt', 'res10_300x300_ssd_iter_140000.caffemodel') # pylint: disable=no-member
 
     # oepn the pickle file and load them into the labels dictionary previously created
@@ -54,15 +68,20 @@ def predict_image(img_path, pickle_path, yml_path):
             # object
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             # this roi_gray is just region of the image that has been identified as a face
-            roi_gray = gray[startY:endY, startX:endX]
+            #roi_gray = gray[startY:endY, startX:endX]
+            img_roi = img[startY:endY, startX:endX]
+            cv2.imwrite('test.png', img_roi)
+            img_roi = preprocess_input('test.png')
+            cv2.imwrite('test.png', img_roi)
             # As long as the roi_gray is bigger than 0, predict the facial classification
-            if roi_gray.shape[0] > 0 and roi_gray.shape[1] > 0:
-                id_, uncertainty = recognizer.predict(roi_gray)
+            if img_roi.shape[0] > 0 and img_roi.shape[1] > 0:
+                id_, uncertainty = recognizer.predict(img_roi)
                 print(uncertainty)
+                print(id_)
             # if the uncertainty of the classification is less than 60, print the name value
-            if uncertainty <70:
+            if uncertainty <85:
                 name = labels[id_]
                 print(name)
                 return name
@@ -95,13 +114,13 @@ def train_faces(dataset, pickle_path, yml_file):
     # Looping through the files in the image_dir
     for root, dirs, files in os.walk(IMAGE_DIR):
         for i,file in enumerate(files): #for each file
-            if file.endswith('png') or file.endswith('jpg') or file.endswith('jpeg') or file.endswith('JPG'): #if it ends with .png or .jpg
+            if file.endswith('png') or file.endswith('jpg') or file.endswith('jpeg') or file.endswith('JPG') or file.endswith('pgm'): #if it ends with .png or .jpg
                 path = os.path.join(root, file) #print its path
                 label = os.path.basename(root).replace(' ', '_').lower() # returns the directory that the image is in (to be used as a label)
 
                 y_train.append(label) # put the label (dir name) into y train
                 # read the image as a grayscale because the recognizer expects it
-                img = cv2.imread(path,0)
+                img = preprocess_input(path)
                 x_train.append(img)
 
                 
@@ -144,8 +163,12 @@ def video2dataset(vid_path, frame_skip, rel_dir, person, prototxt='deploy.protot
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     # Check if the directory you want to put images in exists, if not, create it
-    if not os.path.exists(BASE_DIR + '/' + rel_dir ):
-        os.mkdir(BASE_DIR + '/' + rel_dir)
+    # if not os.path.exists(BASE_DIR + '/' + rel_dir ):
+    #     print('sup')
+    #     os.mkdir(BASE_DIR + '/' + rel_dir)
+    #     os.mkdir(BASE_DIR + '/' + rel_dir + '/' + person)
+    if not os.path.exists(BASE_DIR + '/' + rel_dir + '/' + person):
+        print('hey')
         os.mkdir(BASE_DIR + '/' + rel_dir + '/' + person)
 
     frame_num = 0
@@ -181,9 +204,10 @@ def video2dataset(vid_path, frame_skip, rel_dir, person, prototxt='deploy.protot
                 (startX, startY, endX, endY) = box.astype("int")
         
                 if frame_num % frame_skip == 0:
-                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                    gray_roi = gray[startY:endY, startX:endX]
-                    cv2.imwrite(rel_dir + '/' + person + '/' + str(current_time) + str(frame_num) + '.png', gray_roi)
+                    # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    # gray_roi = gray[startY:endY, startX:endX]
+                    frame_roi = frame[startY:endY, startX:endX]
+                    cv2.imwrite(rel_dir + '/' + person + '/' + str(current_time) + str(frame_num) + '.png', frame_roi)
                     print(rel_dir + '/' + person + '/' + str(frame_num) + '.png')
             
             frame_num+=1
