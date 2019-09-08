@@ -5,6 +5,10 @@ import random
 
 def siamese_pair_generator(imgs_path, num_pairs):
     """
+    Arguments:
+    imgs_path: directory of images 
+    num_pairs: number of images pairs to create (use even number to guarentee equal positive and negatives) 
+
     This function takes a directory of images who are seperated into sub-directories
     according to their class and returns an array of image pairs that is specified by the parameter 'num_pairs' and another array of labels 
     (0 for not same person, 1 for same person). These arrays are made up of pairs of two images, can be matches or negatives and are shuffled. The images are of size 
@@ -15,7 +19,7 @@ def siamese_pair_generator(imgs_path, num_pairs):
 
     IMAGE_DIR = os.path.join(BASE_DIR, imgs_path) # take BASE_DIR and grabs a reference to the images folder within it
 
-    # create x_train, y_train arrays that will later be populated to train recognizer
+    # create x_train, y_train arrays that will later be populated 
     x_train = []
     y_train = []
    
@@ -48,7 +52,3 @@ def siamese_pair_generator(imgs_path, num_pairs):
 
     return list(x_train), list(y_train)
 
-   
-
-x_train, y_train = siamese_pair_generator('./dataset', 30)
-print(x_train, y_train)

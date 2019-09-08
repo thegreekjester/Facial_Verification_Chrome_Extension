@@ -17,19 +17,11 @@ os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
 import keras
 from keras import backend as K
-from keras.layers import Input, Dense, Activation, Flatten, Dropout
-from keras.objectives import categorical_crossentropy
 from keras.models import Model
-from keras.preprocessing.image import ImageDataGenerator
-from keras.preprocessing.image import load_img
-from keras.preprocessing.image import img_to_array
-from keras.callbacks import ModelCheckpoint
-from keras.optimizers import SGD, Adam
 import keras_vggface 
 from keras_vggface.vggface import VGGFace
 from keras_vggface.utils import preprocess_input
-from keras_vggface.utils import decode_predictions
-import matplotlib.pyplot as plt
+
 
 
 person = 'peter_katsos'
@@ -37,11 +29,16 @@ model = None
 graph = None
 
 def load_model():
+    """
+    Function to load the VGGFace model as well as its current graph instance 
+    for creating feature vectors
+    """
     global model
     model = VGGFace(include_top=False, model='resnet50', weights='vggface', input_shape=[200,240] + [3])
     model = Model(inputs=model.inputs, outputs=model.outputs)
     global graph
     graph = tf.get_default_graph() 
+    print('You model has been loaded sucessfully!')
 
 load_model()
 
@@ -62,7 +59,6 @@ def route_func():
     if request.method == 'GET':
         return 'Hello, World!'
     else:
-        print('sup')
         data = request.form['image']
         img = stringToImage(data[22:])
         img = np.array(img)
