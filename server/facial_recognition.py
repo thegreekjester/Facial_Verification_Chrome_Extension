@@ -6,6 +6,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 import keras
 from keras import backend as K
 from keras.layers import Input, Dense, Activation, Flatten, Dropout
@@ -25,27 +26,24 @@ from keras_vggface.utils import decode_predictions
 import matplotlib.pyplot as plt
 print(keras_vggface.__version__)
 
-def preprocess_image(IMG_PATH, IMAGE_SIZE):
+def preprocess_image(IMG_PATH):
     """
     This takes image and runs it through VGGFACE preprocess then preforms histogram equalization and resizing
     """
 
-    img = load_img(IMG_PATH, target_size=IMAGE_SIZE)
+    img = load_img(IMG_PATH, target_size=(200, 240))
     img = img_to_array(img)
-    img = img.reshape((1, img.shape[0], img.shape[1], img.shape[2]))
+    img = np.expand_dims(img, axis=0)
     img = preprocess_input(img)
-    # equ = cv2.equalizeHist(img) # histogram equalization to help deal with inconsistent lighting
-    # norm = cv2.normalize(equ, None, 0, 255, cv2.NORM_MINMAX) #normalize between 0-255
-    # final_img = cv2.fastNlMeansDenoising(norm) # remove all noise
-    
     return img
+    
 
 
 def findCosineDistance(source_representation, test_representation):
-    a = np.matmul(np.transpose(source_representation), test_representation)
-    b = np.sum(np.multiply(source_representation, source_representation))
-    c = np.sum(np.multiply(test_representation, test_representation))
-    return 1 - (a / (np.sqrt(b) * np.sqrt(c)))
+    aa = source_representation.reshape(1,source_representation.shape[3])
+    bb = test_representation.reshape(1,test_representation.shape[3])
+    cos = cosine_similarity(aa,bb)
+    return cos[0][0]
  
 def findEuclideanDistance(source_representation, test_representation):
     euclidean_distance = source_representation - test_representation
@@ -55,13 +53,14 @@ def findEuclideanDistance(source_representation, test_representation):
 
 def verifyFace(img1, img2,vgg_face_descriptor,epsilon, omicron, graph):
     with graph.as_default():
-        img1_representation = vgg_face_descriptor.predict(preprocess_image(img1, [200,240]))[0,:]
-        img2_representation = vgg_face_descriptor.predict(preprocess_image(img2, [200,240]))[0,:]
+        img1_representation = vgg_face_descriptor.predict(preprocess_image(img1))
+        img2_representation = vgg_face_descriptor.predict(preprocess_image(img2))
         
         cosine_similarity = findCosineDistance(img1_representation, img2_representation)
         euclidean_distance = findEuclideanDistance(img1_representation, img2_representation)
-    
-    if(cosine_similarity < epsilon and euclidean_distance < omicron):
+    print(cosine_similarity)
+    print(euclidean_distance)
+    if(euclidean_distance < omicron):
         return 'verified'
     else:
         return 'unverified'
@@ -115,14 +114,12 @@ def predict_image(img_path, person, model, graph):
             #roi_gray = gray[startY:endY, startX:endX]
             img_roi = img[startY:endY, startX:endX]
             cv2.imwrite('test.png', img_roi)
-            img_roi = preprocess_image('test.png', [200,240])
-            cv2.imwrite('test.png', img_roi)
             # As long as the roi_gray is bigger than 0, predict the facial classification
             if img_roi.shape[0] > 0 and img_roi.shape[1] > 0:
                 random_me_path = './dataset/' + person + '/' + random.choice(os.listdir('./dataset/' + person))
-                answer = verifyFace(random_me_path,img_path, model, 40, 120, graph)
+                answer = verifyFace(random_me_path,img_path, model, .70, 120, graph)
 
-    return answer
+    return person if answer == 'verified' else 'nothing found'
 
 def video2dataset(vid_path, frame_skip, rel_dir, person, prototxt='deploy.prototxt.txt', caffe_model='res10_300x300_ssd_iter_140000.caffemodel'):
     """

@@ -15,7 +15,6 @@ import random
 import time
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
-import numpy as np
 import keras
 from keras import backend as K
 from keras.layers import Input, Dense, Activation, Flatten, Dropout
