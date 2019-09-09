@@ -141,6 +141,8 @@ class App extends React.Component {
     } else if (mediaRecorder) {
       // media recorder is in state but hasn't recorded yet (first button press)
       mediaRecorder.start()
+      document.querySelector('.dot').classList.add('rec')
+      document.querySelector('#record_button').childNodes[0].nodeValue = 'Recording...'
       chrome.extension.getBackgroundPage().console.log('started the recording', mediaRecorder.state)
     } else {
       chrome.extension.getBackgroundPage().console.log('in else for some reason')
@@ -210,7 +212,7 @@ class App extends React.Component {
         <div className='container'>
           {this.state.imgResponse && this.state.imgResponse === 'nothing found' ? <h2 style={{ 'color': 'red' }}>Could not recognize you</h2> : <h2 style={{ 'color': '#7CFC00' }}>{this.state.imgResponse}</h2>}
           <img src={this.state.img} alt='da_image_yo'></img>
-          <button onClick={() => this.sendPhoto()} id="keep">Keep Photo</button>
+          <button onClick={() => this.sendPhoto()} id="keep">Verify User</button>
           <button onClick={() => { this.setState({ img: null, imgResponse: null }, () => { this.grabCamera() }) }} id="retake">Retake</button>
         </div>
       );
@@ -232,12 +234,12 @@ class App extends React.Component {
         <div className='container'>
           <video id="video" width="100%" height="100%" autoplay></video>
           <button onClick={() => this.takePicture()} id="snap">Snap Photo</button>
-          <button onClick={() => this.videoPowerButton()}>Record Video</button>
+          <button id='record_button' onClick={() => this.videoPowerButton()}>Record Video<span class="dot"></span></button>
           <canvas id="canvas" height='260' width='350' style={{ 'display': 'none' }}></canvas>
         </div>
       )
     }
-  }
+  } 
 
   render() {
     return (
