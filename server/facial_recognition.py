@@ -106,8 +106,12 @@ def predict_image(img_path, person, model, graph):
             cv2.imwrite('test.png', img_roi)
             # As long as the img_roi is bigger than 0, predict the facial verification
             if img_roi.shape[0] > 0 and img_roi.shape[1] > 0:
-                random_me_path = './dataset/' + person + '/' + random.choice(os.listdir('./dataset/' + person)) # pick random image of myself
-                answer = verifyFace(random_me_path,img_path, model, 120, graph) # change the epsilon to adjust verication performance
+
+                    BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Grabbing base directory
+
+                    if os.path.exists(BASE_DIR + '/' + 'dataset'):
+                        random_me_path = './dataset/' + person + '/' + random.choice(os.listdir('./dataset/' + person)) # pick random image of myself
+                        answer = verifyFace(random_me_path,img_path, model, 120, graph) # change the epsilon to adjust verication performance
 
     return person if answer == 'verified' else 'nothing found'
 
