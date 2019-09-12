@@ -1,26 +1,30 @@
-# Facial Recognition Chrome Extension
+## Facial Verification Log-in Chrome Extension
+Extension to enable facial verification for account login within your Chrome browser. Supply your siamese model with a short video recording and enjoy a "Face ID" kind of authentication right in your browser!  
 
-This is a chrome extension that you can use to sign in to websites with facial recognition. 
+## Motivation
+I thought of creating this extension after first witnessing the iPhone X's Face ID feature first hand. Having an interest in computer vision I was amazed with being able to use your face as a way to sign in. When thinking about my day-to-day, I was constantly using/forgetting passwords while browsing the internet, so this seemed like a great project to take on
 
-![Camera Extension](Camera_Extension.png)
+ 
+## Screenshots
+
+![Farmers Market Finder Demo](readme_files/demo.gif)
+
+## Tech/framework used
+
+- [React](https://reactjs.org/)
+- [Keras](https://keras.io)
+- [OpenCV](https://opencv.org/)
+- [Tensorflow](https://www.tensorflow.org/)
+- [Chrome API](https://developer.chrome.com/extensions/api_index)
+- [Chrome Extensions](https://developer.chrome.com/extensions)
+
+## Features
+What makes your project stand out?
+
+## Code Example
+Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
 
 ## Installation
-
-For Python Part (the server)
-
-```bash
-pip3 install opencv-python
-
-pip3 install flask 
-
-pip3 install numpy
-```
-
-For JS part (front end)
-
-```bash
-npm install --save 
-```
 
 ## Set up
 
@@ -79,12 +83,26 @@ var mediaRecorder;
 
 7. **Congrats! You now can sign in with your facial features!!**
 
- 
+## API Reference
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
 
-Please make sure to update tests as appropriate.
+## Tests
+Describe and show how to run the tests with code examples.
+
+## How to use?
+If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
+
+## Contribute
+
+Let people know how they can contribute into your project. A [contributing guideline](https://github.com/zulip/zulip-electron/blob/master/CONTRIBUTING.md) will be a big plus.
+
+## Credits
+Give proper credits. This could be a link to any repo which inspired you to build this project, any blogposts or links to people who contrbuted in this project. 
+
+#### Anything else that seems useful
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+A short snippet describing the license (MIT, Apache etc)
+
+MIT © [Peter Katsos]()

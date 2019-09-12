@@ -48,6 +48,10 @@ def findEuclideanDistance(image_1, image_2):
 def verifyFace(image_1, image_2,model,epsilon, graph):
     """
     Arguments:
+    image_1: the feature vector of a stored image of user
+    image_2: the feature vector of the image taken by whoever is trying to verify
+    model: keras model (siamese half)
+    graph: current instance of model being used
     """
     with graph.as_default():
         img1_representation = model.predict(preprocess_image(image_1))
@@ -138,7 +142,7 @@ def video2dataset(vid_path, frame_skip, rel_dir, person, prototxt='deploy.protot
     # Check if the directory you want to put images in exists, if not, create it
     if not os.path.exists(BASE_DIR + '/' + rel_dir + '/' + person):
         print('hey')
-        os.mkdir(BASE_DIR + '/' + rel_dir + '/' + person)
+        os.makedirs(BASE_DIR + '/' + rel_dir + '/' + person)
 
     frame_num = 0
     # Set capture to the video file
