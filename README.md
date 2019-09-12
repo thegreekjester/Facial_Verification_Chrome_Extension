@@ -7,7 +7,7 @@ I thought of creating this extension after first witnessing the iPhone X's Face 
  
 ## Screenshots
 
-![Farmers Market Finder Demo](readme_files/demo.gif)
+![Training](readme_files/training.gif)
 
 ## Tech/framework used
 
