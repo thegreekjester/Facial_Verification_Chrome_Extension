@@ -9,7 +9,7 @@ I thought of creating this extension after first witnessing the iPhone X's Face 
 
 **Introduce your facial features to the model for later verification:**
 
-![Training](readme_files/training.gif)
+![Training](readme_files/training.gif=250x200)
 
 **Verification:**
 
@@ -39,18 +39,14 @@ I thought of creating this extension after first witnessing the iPhone X's Face 
 - Facial descriptor via siamese model
 - Automatically applies username and password to logins
 
-## Code Example
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
 
 ## Installation
 
-## Set up
+1. `pip install` **and** `npm install` **all relevant packages (listed above in tech/frameworks)**
 
-1. **pip install all relevant packages (listed above in tech/frameworks)**
+2. **Grab your Chrome Passwords by exporting it to CSV (reference below link)**
 
-2. **Grab your Chrome Passwords by exporting it to CSV**
-
-- https://www.cyclonis.com/how-export-passwords-csv-file-from-google-chrome/ 
+  * https://www.cyclonis.com/how-export-passwords-csv-file-from-google-chrome/ 
 
 3. **Put Chrome Passwords CSV into src folder**
 
@@ -78,40 +74,27 @@ var mediaRecorder;
 
 ## Usage
 
-1. **After Set up, run "npm run build" to create out the new build folder**
+1. After installation, go to main directory of the repo and run "npm run build" in terminal to create the build folder (used for extension uploading)
 
-2. **Go to "chrome://extensions/" in your browser and upload the build folder you just created as a new extension**
+2. Type "chrome://extensions/" in your browser and click "load unpacked" in the top left and select that build folder from step 1
 
-3. **Go to ./server and run "export FLASK_APP=flask_server.py" in the terminal**
+3. Navigate to ./server and type `export FLASK_APP=flask_server.py` in the terminal
 
-4. **Start Flask server by running "flask run" in terminal**
+4. Start Flask server by typing `flask run` in terminal
 
-5. **Train the Neural Network by Capturing a video of you, then press "train model"; You should receive a message saying model is successfully trained**
+5. Train the Neural Network by clicking "Record" to record a video of you, then press "train model"; **You should receive a message saying model is successfully trained**
 
-6. **Go to a website that your chrome browser has saved the passwords for, then open up extension and take a photo. Then Click "keep photo". If the model recognized you, the user name and password should populate the login**
+6. Go to a website that your chrome browser has saved the passwords for, then open up extension and take a photo. Click "verify user". If the model recognized you, your name should appear on top of the image and your user name and password should populate the login.
 
-7. **Congrats! You now can sign in with your facial features!!**
-
-## API Reference
-
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
-
-## Tests
-Describe and show how to run the tests with code examples.
-
-## How to use?
-If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
+7. Congrats! You now can sign in with your facial features!!
 
 ## Contribute
 
-Let people know how they can contribute into your project. A [contributing guideline](https://github.com/zulip/zulip-electron/blob/master/CONTRIBUTING.md) will be a big plus.
+Pull Requests are always welcome!
 
 ## Credits
-Give proper credits. This could be a link to any repo which inspired you to build this project, any blogposts or links to people who contrbuted in this project. 
-
-#### Anything else that seems useful
+Kara Chill, Pat Katsos, Louis Katsos for their faces during testing
 
 ## License
-A short snippet describing the license (MIT, Apache etc)
 
 MIT © [Peter Katsos]()
