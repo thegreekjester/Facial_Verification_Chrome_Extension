@@ -1,53 +1,66 @@
-# Facial Recognition Chrome Extension
+## Facial Verification Log-in Chrome Extension
+Extension to enable facial verification for account login within your Chrome browser. Supply your siamese model with a short video recording and enjoy a "Face ID" kind of authentication right in your browser!  
 
-This is a chrome extension that you can use to sign in to websites with facial recognition. 
+## Motivation
+I thought of creating this extension after first witnessing the iPhone X's Face ID feature first hand. Having an interest in computer vision I was amazed with being able to use your face as a way to sign in. When thinking about my day-to-day, I was constantly using/forgetting passwords while browsing the internet, so this seemed like a great project to take on
 
-![Camera Extension](Camera_Extension.png)
+ 
+## Screenshots
+
+**Introduce your facial features to the model for later verification:**
+
+![Training](readme_files/training.gif)
+
+**Verification:**
+
+![Verification](readme_files/verification.gif)
+
+## Tech/framework used
+
+- [React](https://reactjs.org/)
+- [Keras](https://keras.io)
+- [OpenCV](https://opencv.org/)
+- [Tensorflow](https://www.tensorflow.org/)
+- [Flask](https://www.fullstackpython.com/flask.html)
+- [Chrome API](https://developer.chrome.com/extensions/api_index)
+- [Chrome Extensions](https://developer.chrome.com/extensions)
+
+## Packages:
+- [Base64](https://docs.python.org/3/library/base64.html)
+- [Numpy](https://numpy.org/)
+- [PIL](https://www.pythonware.com/products/pil/)
+- [Axios](https://www.npmjs.com/package/axios)
+- [Papaparse](https://www.npmjs.com/package/papaparse)
+
+
+## Features
+
+- Facial verification
+- Facial descriptor via siamese model
+- Automatically applies username and password to logins
+
+## Code Example
+Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
 
 ## Installation
 
-For Python Part (the server)
-
-```bash
-pip3 install opencv-python
-
-pip3 install flask 
-
-pip3 install numpy
-```
-
-For JS part (front end)
-
-```bash
-npm install --save 
-```
-
 ## Set up
 
-1. **Grab your Chrome Passwords by exporting it to CSV**
-  - https://www.cyclonis.com/how-export-passwords-csv-file-from-google-chrome/ 
+1. **pip install all relevant packages (listed above in tech/frameworks)**
 
-2. **Put Chrome Passwords CSV into ./src folder**
+2. **Grab your Chrome Passwords by exporting it to CSV**
 
-3. **Go to ./server/flask_server.py and add your name**
+- https://www.cyclonis.com/how-export-passwords-csv-file-from-google-chrome/ 
+
+3. **Put Chrome Passwords CSV into src folder**
+
+4. **Go to ./server/flask_server.py and add your name**
 
 ```python
-# localhost:5000/video route
-@APP.route('/video', methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
-def new_func():
-    if request.method == 'GET':
-        return 'Hello, World!'
-    else:
-        # uses request.files becuase what I am sending over is in blob format
-        print('this is files', request.files['video'])
-        file = request.files['video']
-        file.save('new_output.webm')
-        person = 'insert_name_here'
-        video2dataset('new_output.webm',5,'dataset', person)
-        train_faces('dataset', 'new_pickle.pickle', 'new_yml.yml')
-        # send back a response saying training was succesfully 
-        return 'received the video'
+
+person = 'user' # replace with your name
+model = None # do not change
+graph = None # do not change
 
 ```
 
@@ -79,12 +92,26 @@ var mediaRecorder;
 
 7. **Congrats! You now can sign in with your facial features!!**
 
- 
+## API Reference
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
 
-Please make sure to update tests as appropriate.
+## Tests
+Describe and show how to run the tests with code examples.
+
+## How to use?
+If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
+
+## Contribute
+
+Let people know how they can contribute into your project. A [contributing guideline](https://github.com/zulip/zulip-electron/blob/master/CONTRIBUTING.md) will be a big plus.
+
+## Credits
+Give proper credits. This could be a link to any repo which inspired you to build this project, any blogposts or links to people who contrbuted in this project. 
+
+#### Anything else that seems useful
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+A short snippet describing the license (MIT, Apache etc)
+
+MIT © [Peter Katsos]()
