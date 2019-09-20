@@ -9,7 +9,7 @@ I thought of creating this extension after first witnessing the iPhone X's Face 
 
 **Introduce your facial features to the model for later verification:**
 
-![Training](readme_files/training.gif=250x200)
+![Training](readme_files/training.gif)
 
 **Verification:**
 
