@@ -7,7 +7,13 @@ I thought of creating this extension after first witnessing the iPhone X's Face 
  
 ## Screenshots
 
-![Training](readme_files/training.gif)
+**Introduce your facial features to the model for later verification:**
+
+![Training](readme_files/training.gif=250x200)
+
+**Verification:**
+
+![Verification](readme_files/verification.gif=250x200)
 
 ## Tech/framework used
 
@@ -15,11 +21,23 @@ I thought of creating this extension after first witnessing the iPhone X's Face 
 - [Keras](https://keras.io)
 - [OpenCV](https://opencv.org/)
 - [Tensorflow](https://www.tensorflow.org/)
+- [Flask](https://www.fullstackpython.com/flask.html)
 - [Chrome API](https://developer.chrome.com/extensions/api_index)
 - [Chrome Extensions](https://developer.chrome.com/extensions)
 
+## Packages:
+- [Base64](https://docs.python.org/3/library/base64.html)
+- [Numpy](https://numpy.org/)
+- [PIL](https://www.pythonware.com/products/pil/)
+- [Axios](https://www.npmjs.com/package/axios)
+- [Papaparse](https://www.npmjs.com/package/papaparse)
+
+
 ## Features
-What makes your project stand out?
+
+- Facial verification
+- Facial descriptor via siamese model
+- Automatically applies username and password to logins
 
 ## Code Example
 Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
@@ -28,30 +46,21 @@ Show what the library does as concisely as possible, developers should be able t
 
 ## Set up
 
-1. **Grab your Chrome Passwords by exporting it to CSV**
-  - https://www.cyclonis.com/how-export-passwords-csv-file-from-google-chrome/ 
+1. **pip install all relevant packages (listed above in tech/frameworks)**
 
-2. **Put Chrome Passwords CSV into ./src folder**
+2. **Grab your Chrome Passwords by exporting it to CSV**
 
-3. **Go to ./server/flask_server.py and add your name**
+- https://www.cyclonis.com/how-export-passwords-csv-file-from-google-chrome/ 
+
+3. **Put Chrome Passwords CSV into src folder**
+
+4. **Go to ./server/flask_server.py and add your name**
 
 ```python
-# localhost:5000/video route
-@APP.route('/video', methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
-def new_func():
-    if request.method == 'GET':
-        return 'Hello, World!'
-    else:
-        # uses request.files becuase what I am sending over is in blob format
-        print('this is files', request.files['video'])
-        file = request.files['video']
-        file.save('new_output.webm')
-        person = 'insert_name_here'
-        video2dataset('new_output.webm',5,'dataset', person)
-        train_faces('dataset', 'new_pickle.pickle', 'new_yml.yml')
-        # send back a response saying training was succesfully 
-        return 'received the video'
+
+person = 'user' # replace with your name
+model = None # do not change
+graph = None # do not change
 
 ```
 

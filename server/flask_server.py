@@ -24,7 +24,7 @@ from keras_vggface.utils import preprocess_input
 
 
 
-person = 'name_user' # replace with your name
+person = 'user' # replace with your name
 model = None # do not change
 graph = None # do not change
 
